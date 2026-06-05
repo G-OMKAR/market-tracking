@@ -19,29 +19,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Public API endpoints
                         .requestMatchers("/api/v1/**").permitAll()
-
-                        // Swagger UI
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-
-                        // H2 Console
                         .requestMatchers("/h2-console/**").permitAll()
-
-                        // Health Check
                         .requestMatchers("/actuator/health").permitAll()
-
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .headers(headers ->
                         headers.frameOptions(frame -> frame.sameOrigin()));
@@ -54,11 +47,8 @@ public class SecurityConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of(
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "https://market-tracking.vercel.app"
-        ));
+        // TEMPORARY: Allow all origins for testing
+        config.addAllowedOriginPattern("*");
 
         config.setAllowedMethods(List.of(
                 "GET",
@@ -69,7 +59,9 @@ public class SecurityConfig {
         ));
 
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);
+
+        config.setAllowCredentials(false);
+
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source =
