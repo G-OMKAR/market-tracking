@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-primary: #1a5c2a;
+  --color-primary-light: #2d8a42;
+  --color-accent: #e5a020;
+  --color-accent-light: #f4d98f;
+  --color-bg: #f7f9f5;
+  --color-surface: #ffffff;
+  --color-border: #d4e4d8;
+  --color-text: #1a2e1e;
+  --color-text-muted: #4d6b54;
+  --color-up: #16a34a;
+  --color-down: #dc2626;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f0f4f1; }
+::-webkit-scrollbar-thumb { background: #9dc4a5; border-radius: 3px; }
+
+.header-title {
+  font-family: 'Noto Serif', Georgia, serif;
+}
+
+.price-table th {
+  background: #edf3ee;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.price-table tr:hover td {
+  background: #f5faf6;
+}
+
+.badge-faq { @apply bg-blue-100 text-blue-700; }
+.badge-gradea { @apply bg-green-100 text-green-700; }
+.badge-super { @apply bg-purple-100 text-purple-700; }
+
+.filter-select {
+  @apply border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent;
+}
+
+.btn-primary {
+  @apply bg-green-700 hover:bg-green-800 text-white font-semibold px-5 py-2 rounded-md transition-colors text-sm;
+}
+
+.btn-secondary {
+  @apply border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium px-4 py-2 rounded-md transition-colors text-sm;
+}
+
+.stat-card {
+  @apply bg-white rounded-xl border border-green-100 p-4 shadow-sm;
+}
+
+.tab-active {
+  border-bottom: 3px solid var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.tab-inactive {
+  color: #6b7280;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-inactive:hover {
+  color: var(--color-primary);
+  border-bottom-color: #9dc4a5;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.skeleton {
+  @apply bg-gray-200 animate-pulse rounded;
+}

@@ -1,0 +1,69 @@
+version: "3.9"
+
+services:
+  # PostgreSQL database
+  db:
+    image: postgres:16-alpine
+    container_name: agmarknet_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: agmarknet
+      POSTGRES_USER: agmarknet
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-agmarknet_secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agmarknet"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agmarknet_net
+
+  # Spring Boot backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: agmarknet_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://db:5432/agmarknet
+      DB_USERNAME: agmarknet
+      DB_PASSWORD: ${DB_PASSWORD:-agmarknet_secret}
+      ALLOWED_ORIGINS: http://localhost,http://frontend
+    ports:
+      - "8080:8080"
+    networks:
+      - agmarknet_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # React frontend served by Nginx
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: agmarknet_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - agmarknet_net
+
+volumes:
+  postgres_data:
+
+networks:
+  agmarknet_net:
+    driver: bridge
